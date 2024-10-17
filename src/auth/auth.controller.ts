@@ -13,6 +13,7 @@ import { AuthService } from './auth.service';
 import { Public } from '@/decorator/customize';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { LocalAuthGuard } from './passport/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -23,6 +24,7 @@ export class AuthController {
 
   @Post('login')
   @Public()
+  @UseGuards(LocalAuthGuard)
   handleLogin(@Request() req) {
     return this.authService.login(req.user);
   }
@@ -40,7 +42,11 @@ export class AuthController {
       to: 'thanhlong5126@gmail.com', // list of receivers
       subject: 'Testing Nest MailerModule ✔', // Subject line
       text: 'welcome', // plaintext body
-      html: '<b>welcome</b>', // HTML body content
+      template: 'register',
+      context: {
+        name: 'asdas',
+        activationCode: 213231,
+      },
     });
     return 'ok';
   }
